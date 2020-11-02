@@ -13,7 +13,7 @@ module.exports = {
     rules: [
       {
         test: /\.wasm$/,
-        type: "webassembly/async"
+        type: "webassembly/sync"
       }
     ]
   },
@@ -28,6 +28,6 @@ module.exports = {
     })
   ],
   experiments: {
-    asyncWebAssembly: true
+    syncWebAssembly: true
   }
 };
