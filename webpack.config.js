@@ -34,7 +34,8 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "index.html"
+      template: "index.html",
+      inject: 'head'
     }),
     new WasmPackPlugin({
       crateDirectory: __dirname,
