@@ -1,3 +1,5 @@
+import 'bulma/css/bulma.css';
+
 const rust = import('./pkg');
 
 let target = document.getElementById('target');
