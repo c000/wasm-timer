@@ -13,6 +13,8 @@ pub struct RState {
     target: web_sys::HtmlElement,
 
     counter: i32,
+
+    buffer: String,
 }
 
 #[wasm_bindgen]
@@ -28,14 +30,29 @@ impl RState {
             document: document,
             target: target,
             counter: 0,
+            buffer: String::new(),
         })
     }
 
     pub fn mainloop(&mut self) -> Result<(), JsValue> {
-        self.target
-            .set_inner_html(format!("No. {}", self.counter).as_ref());
+        let dt = chrono::Local::now();
+
+        self.target.set_inner_text(
+            format!(
+                "T: {}\nN: {}\nS: {}",
+                dt.to_rfc3339_opts(chrono::SecondsFormat::Millis, false),
+                self.counter,
+                self.buffer,
+            )
+            .as_ref(),
+        );
 
         self.counter += 1;
+        Ok(())
+    }
+
+    pub fn exec(&mut self, s: &str) -> Result<(), JsValue> {
+        self.buffer.push_str(s);
         Ok(())
     }
 }
