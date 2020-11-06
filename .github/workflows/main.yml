@@ -10,9 +10,14 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions-rs/install@v0.1
+        with:
+          crate: wasm-pack
+          version: latest
+          use-tool-cache: true
+
       - name: Setup
         run: |
-          cargo install wasm-pack
           npm install
 
       - name: Build
