@@ -20,7 +20,7 @@ window.onload = () => {
 
       execButton.addEventListener('click', e => {
         e.preventDefault();
-        r.exec(timespan.value);
+        timespan.classList.toggle("is-danger", !r.exec(timespan.value));
       });
     })
     .catch(console.error);

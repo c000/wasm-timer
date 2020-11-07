@@ -5,12 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
-  <body>
+  <body class="has-background-grey-darker" style="height: 100vh;">
     <link href="https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@700&display=swap" rel="stylesheet">
     <section class="section">
-      <div class="box" style="font-family: 'Overpass Mono', monospace;">
-        <div id="target"></div>
-      </div>
 
       <form class="field has-addons">
         <div class="control">
@@ -22,6 +19,9 @@
           </button>
         </div>
       </form>
+
+      <div id="target" style="font-family: 'Overpass Mono', monospace;">
+      </div>
 
     </section>
   </body>

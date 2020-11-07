@@ -1,4 +1,7 @@
 use wasm_bindgen::prelude::*;
+use wasm_bindgen::JsCast;
+
+mod timer;
 
 #[wasm_bindgen]
 extern "C" {
@@ -10,17 +13,15 @@ extern "C" {
 pub struct RState {
     document: web_sys::Document,
 
-    target: web_sys::HtmlElement,
+    target: web_sys::HtmlDivElement,
 
-    counter: i32,
-
-    buffer: String,
+    timers: Vec<timer::Instance>,
 }
 
 #[wasm_bindgen]
 impl RState {
     #[wasm_bindgen(constructor)]
-    pub fn new(target: web_sys::HtmlElement) -> Result<RState, JsValue> {
+    pub fn new(target: web_sys::HtmlDivElement) -> Result<RState, JsValue> {
         let document = web_sys::window()
             .expect("no global `window` exists")
             .document()
@@ -29,30 +30,38 @@ impl RState {
         Ok(RState {
             document: document,
             target: target,
-            counter: 0,
-            buffer: String::new(),
+            timers: Vec::new(),
         })
     }
 
     pub fn mainloop(&mut self) -> Result<(), JsValue> {
-        let dt = chrono::Local::now();
-
-        self.target.set_inner_text(
-            format!(
-                "T: {}\nN: {}\nS: {}",
-                dt.to_rfc3339_opts(chrono::SecondsFormat::Millis, false),
-                self.counter,
-                self.buffer,
-            )
-            .as_ref(),
-        );
-
-        self.counter += 1;
+        for t in self.timers.iter_mut() {
+            t.update()?;
+        }
         Ok(())
     }
 
-    pub fn exec(&mut self, s: &str) -> Result<(), JsValue> {
-        self.buffer.push_str(s);
-        Ok(())
+    pub fn exec(&mut self, s: &str) -> Result<bool, JsValue> {
+        let res = timer::parse_time(s);
+
+        match res {
+            Err(e) => {
+                log(format!("{}", e).as_ref());
+                Ok(false)
+            }
+
+            Ok(duration) => {
+                let div = self
+                    .document
+                    .create_element("div")?
+                    .dyn_into::<web_sys::HtmlDivElement>()?;
+                div.set_class_name("box");
+                self.target.append_child(div.as_ref())?;
+                let i = timer::Instance::new(&self.document, div, duration)?;
+                self.timers.push(i);
+
+                Ok(true)
+            }
+        }
     }
 }
