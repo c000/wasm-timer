@@ -1,3 +1,5 @@
+import "tailwindcss/tailwind.css";
+
 const rust = import('./pkg');
 
 window.onload = () => {

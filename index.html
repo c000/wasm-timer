@@ -5,24 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
-  <body class="has-background-grey-darker" style="height: 100vh;">
+  <body class="bg-gray-700">
     <link href="https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@700&display=swap" rel="stylesheet">
-    <section class="section">
 
-      <form class="field has-addons">
-        <div class="control">
-          <input class="input" type="text" id="timespan" placeholder="H:M:S" />
+    <nav class="bg-gray-900 shadow">
+      <div class="container p-2 flex flex-wrap justify-between mx-auto">
+        <div class="flex self-center font-bold text-white">
+          Wasm-timer
         </div>
-        <div class="control">
-          <button class="button is-primary" id="exec">
+
+        <form class="flex">
+          <input class="p-1 bg-gray-100" type="text" id="timespan" placeholder="H:M:S" />
+          <button class="bg-gray-300 p-1" id="exec">
             Exec
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
+    </nav>
 
+    <div class="container mx-auto">
       <div id="target" style="font-family: 'Overpass Mono', monospace;">
       </div>
-
-    </section>
+    </div>
   </body>
 </html>
