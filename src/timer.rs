@@ -1,7 +1,10 @@
 use chrono::{DateTime, Duration, Utc};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::{Document, HtmlDivElement, HtmlProgressElement};
+use web_sys::{Document, HtmlDivElement};
+
+const PROGRESS_STANDARD_COLOR: &str = "bg-gray-700";
+const PROGRESS_COMPLETED_COLOR: &str = "bg-orange-600";
 
 pub fn parse_time(ss: &str) -> Result<chrono::Duration, Box<dyn std::error::Error>> {
     if ss.is_empty() {
@@ -36,7 +39,7 @@ pub fn parse_time(ss: &str) -> Result<chrono::Duration, Box<dyn std::error::Erro
 
 pub struct Instance {
     remains_text: HtmlDivElement,
-    progress: HtmlProgressElement,
+    progress: HtmlDivElement,
 
     start_at: DateTime<Utc>,
     duration: Duration,
@@ -52,16 +55,37 @@ impl Instance {
     ) -> Result<Instance, JsValue> {
         let s = Utc::now();
 
-        let remains = document.create_element("div")?;
+        target.set_class_name("flex bg-gray-50 shadow my-2");
+
+        let remains = document
+            .create_element("div")?
+            .dyn_into::<HtmlDivElement>()?;
+        remains.set_class_name("flex p-1 self-center");
         target.append_child(remains.as_ref())?;
 
-        let progress = document.create_element("progress")?;
-        progress.set_class_name("progress");
-        target.append_child(progress.as_ref())?;
+        let progress_container = document
+            .create_element("div")?
+            .dyn_into::<HtmlDivElement>()?;
+        progress_container.set_class_name(
+            "overflow-hidden m-2 flex flex-grow self-center bg-gray-300 text-xs text-white",
+        );
+        target.append_child(progress_container.as_ref())?;
+
+        let p2 = document
+            .create_element("div")?
+            .dyn_into::<HtmlDivElement>()?;
+        p2.set_class_name(
+            format!(
+                "{} flex flex-col px-1 text-right font-sans",
+                PROGRESS_STANDARD_COLOR
+            )
+            .as_ref(),
+        );
+        progress_container.append_child(p2.as_ref())?;
 
         Ok(Instance {
             remains_text: remains.dyn_into()?,
-            progress: progress.dyn_into()?,
+            progress: p2.dyn_into()?,
 
             start_at: s,
             duration: duration,
@@ -80,14 +104,21 @@ impl Instance {
             1.0 // Done
         };
 
-        self.remains_text.set_inner_text(
-            format!("{} ({:.3})", format_duration(&(passed - self.duration)), p).as_ref(),
-        );
+        self.remains_text
+            .set_inner_text(format!("{}", format_duration(&(passed - self.duration))).as_ref());
+
+        self.progress.set_inner_text(format!("{:.3}", p).as_ref());
 
         if !self.done {
-            self.progress.set_value(p);
+            let percent = p * 100.0;
+            self.progress
+                .style()
+                .set_property("width", format!("{}%", percent).as_ref())?;
+
             if 1.0 <= p {
-                self.progress.class_list().add_1("is-danger")?;
+                let cl = self.progress.class_list();
+                cl.remove_1(PROGRESS_STANDARD_COLOR)?;
+                cl.add_1(PROGRESS_COMPLETED_COLOR)?;
                 self.done = true;
             }
         }
