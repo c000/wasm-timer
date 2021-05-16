@@ -24,7 +24,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "__wbg_remove_c15603553c81dc31": () => /* reexport safe */ _index_bg_js__WEBPACK_IMPORTED_MODULE_0__.w8,
 /* harmony export */   "__wbg_self_bb69a836a72ec6e9": () => /* reexport safe */ _index_bg_js__WEBPACK_IMPORTED_MODULE_0__.tS,
 /* harmony export */   "__wbg_setProperty_dccccce3a52c26db": () => /* reexport safe */ _index_bg_js__WEBPACK_IMPORTED_MODULE_0__.mK,
-/* harmony export */   "__wbg_setclassName_09e9074a6eb1e2cb": () => /* reexport safe */ _index_bg_js__WEBPACK_IMPORTED_MODULE_0__.UJ,
 /* harmony export */   "__wbg_setinnerText_4204a2dcac11f07d": () => /* reexport safe */ _index_bg_js__WEBPACK_IMPORTED_MODULE_0__.tD,
 /* harmony export */   "__wbg_style_25309daade79abb3": () => /* reexport safe */ _index_bg_js__WEBPACK_IMPORTED_MODULE_0__.eU,
 /* harmony export */   "__wbg_window_3304fc4b414c9693": () => /* reexport safe */ _index_bg_js__WEBPACK_IMPORTED_MODULE_0__.R$,
@@ -52,7 +51,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "WB": () => /* binding */ __wbg_document_5aff8cd83ef968f5,
 /* harmony export */   "b6": () => /* binding */ __wbg_createElement_ac65a6ce60c4812c,
 /* harmony export */   "tu": () => /* binding */ __wbg_instanceof_HtmlDivElement_819bb57c54982a2f,
-/* harmony export */   "UJ": () => /* binding */ __wbg_setclassName_09e9074a6eb1e2cb,
 /* harmony export */   "O3": () => /* binding */ __wbg_classList_bbb57a7d3cc23c85,
 /* harmony export */   "tD": () => /* binding */ __wbg_setinnerText_4204a2dcac11f07d,
 /* harmony export */   "eU": () => /* binding */ __wbg_style_25309daade79abb3,
@@ -264,10 +262,6 @@ function __wbg_createElement_ac65a6ce60c4812c() { return handleError(function (a
 function __wbg_instanceof_HtmlDivElement_819bb57c54982a2f(arg0) {
     var ret = getObject(arg0) instanceof HTMLDivElement;
     return ret;
-};
-
-function __wbg_setclassName_09e9074a6eb1e2cb(arg0, arg1, arg2) {
-    getObject(arg0).className = getStringFromWasm0(arg1, arg2);
 };
 
 function __wbg_classList_bbb57a7d3cc23c85(arg0) {
