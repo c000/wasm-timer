@@ -50,7 +50,7 @@ pub struct Instance {
 impl Instance {
     pub fn new(
         document: &Document,
-        target: HtmlDivElement,
+        target: &HtmlDivElement,
         duration: Duration,
     ) -> Result<Instance, JsValue> {
         let s = Utc::now();

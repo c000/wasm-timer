@@ -55,8 +55,8 @@ impl RState {
                     .document
                     .create_element("div")?
                     .dyn_into::<web_sys::HtmlDivElement>()?;
+                let i = timer::Instance::new(&self.document, &div, duration)?;
                 self.target.append_child(div.as_ref())?;
-                let i = timer::Instance::new(&self.document, div, duration)?;
                 self.timers.push(i);
 
                 Ok(true)
