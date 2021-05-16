@@ -1,7 +1,7 @@
 use chrono::{DateTime, Duration, Utc};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use web_sys::{Document, HtmlDivElement};
+use web_sys::{Document, HtmlDivElement, HtmlElement};
 
 const PROGRESS_STANDARD_COLOR: &str = "bg-gray-700";
 const PROGRESS_COMPLETED_COLOR: &str = "bg-orange-600";
@@ -55,37 +55,51 @@ impl Instance {
     ) -> Result<Instance, JsValue> {
         let s = Utc::now();
 
-        target.set_class_name("flex bg-gray-50 shadow my-2");
+        add_classes(&target, &["flex", "bg-gray-50", "shadow", "my-2"])?;
 
         let remains = document
             .create_element("div")?
             .dyn_into::<HtmlDivElement>()?;
-        remains.set_class_name("flex p-1 self-center");
+        add_classes(&remains, &["flex", "p-1", "self-center"])?;
         target.append_child(remains.as_ref())?;
 
         let progress_container = document
             .create_element("div")?
             .dyn_into::<HtmlDivElement>()?;
-        progress_container.set_class_name(
-            "overflow-hidden m-2 flex flex-grow self-center bg-gray-300 text-xs text-white",
-        );
+        add_classes(
+            &progress_container,
+            &[
+                "overflow-hidden",
+                "m-2",
+                "flex",
+                "flex-grow",
+                "self-center",
+                "bg-gray-300",
+                "text-xs",
+                "text-white",
+            ],
+        )?;
         target.append_child(progress_container.as_ref())?;
 
-        let p2 = document
+        let progress = document
             .create_element("div")?
             .dyn_into::<HtmlDivElement>()?;
-        p2.set_class_name(
-            format!(
-                "{} flex flex-col px-1 text-right font-sans",
-                PROGRESS_STANDARD_COLOR
-            )
-            .as_ref(),
-        );
-        progress_container.append_child(p2.as_ref())?;
+        add_classes(
+            &progress,
+            &[
+                PROGRESS_STANDARD_COLOR,
+                "flex",
+                "flex-col",
+                "px-1",
+                "text-right",
+                "font-sans",
+            ],
+        )?;
+        progress_container.append_child(progress.as_ref())?;
 
         Ok(Instance {
             remains_text: remains.dyn_into()?,
-            progress: p2.dyn_into()?,
+            progress: progress.dyn_into()?,
 
             start_at: s,
             duration: duration,
@@ -138,4 +152,15 @@ fn format_duration(d: &Duration) -> String {
     let h = ds / 60 / 60;
 
     format!("T{}{:02}:{:02}:{:02}.{:01}", sign, h, m, s, ms)
+}
+
+fn add_classes<T>(element: T, classes: &[&str]) -> Result<(), JsValue>
+where
+    T: AsRef<HtmlElement>,
+{
+    let cl = element.as_ref().class_list();
+    for c in classes {
+        cl.add_1(c)?;
+    }
+    Ok(())
 }
