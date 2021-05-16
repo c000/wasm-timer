@@ -1,5 +1,3 @@
-import 'bulma/css/bulma.css';
-
 const rust = import('./pkg');
 
 window.onload = () => {
