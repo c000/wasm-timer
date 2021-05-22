@@ -14,6 +14,10 @@ window.onload = () => {
   let execButton = document.getElementById('exec');
   let timespan = document.getElementById('timespan');
 
+  document.getElementById('dim').addEventListener('click', e => {
+    document.documentElement.classList.toggle('dark');
+  });
+
   rust
     .then(m => {
 
@@ -27,7 +31,7 @@ window.onload = () => {
 
       execButton.addEventListener('click', e => {
         e.preventDefault();
-        timespan.classList.toggle("is-danger", !r.exec(timespan.value));
+        timespan.classList.toggle('is-danger', !r.exec(timespan.value));
       });
     })
     .catch(console.error);
@@ -480,7 +484,7 @@ window.onload = () => {
 /******/ 					promises.push(installedWasmModuleData);
 /******/ 				else {
 /******/ 					var importObject = wasmImportObjects[wasmModuleId]();
-/******/ 					var req = fetch(__webpack_require__.p + "" + {"235":{"716":"988cf95781fa7c170e4f"}}[chunkId][wasmModuleId] + ".module.wasm");
+/******/ 					var req = fetch(__webpack_require__.p + "" + {"235":{"716":"27b4d3681f7c9d367dcc"}}[chunkId][wasmModuleId] + ".module.wasm");
 /******/ 					var promise;
 /******/ 					if(importObject instanceof Promise && typeof WebAssembly.compileStreaming === 'function') {
 /******/ 						promise = Promise.all([WebAssembly.compileStreaming(req), importObject]).then(function(items) {
