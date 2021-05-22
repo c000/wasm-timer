@@ -55,7 +55,7 @@ impl Instance {
     ) -> Result<Instance, JsValue> {
         let s = Utc::now();
 
-        add_classes(&target, &["flex", "bg-gray-50", "shadow", "my-2"])?;
+        add_classes(&target, &["flex", "bg-white", "shadow", "my-2", "p-2"])?;
 
         let remains = document
             .create_element("div")?

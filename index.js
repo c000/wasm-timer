@@ -7,6 +7,10 @@ window.onload = () => {
   let execButton = document.getElementById('exec');
   let timespan = document.getElementById('timespan');
 
+  document.getElementById('dim').addEventListener('click', e => {
+    document.documentElement.classList.toggle('dark');
+  });
+
   rust
     .then(m => {
 
@@ -20,7 +24,7 @@ window.onload = () => {
 
       execButton.addEventListener('click', e => {
         e.preventDefault();
-        timespan.classList.toggle("is-danger", !r.exec(timespan.value));
+        timespan.classList.toggle('is-danger', !r.exec(timespan.value));
       });
     })
     .catch(console.error);

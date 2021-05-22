@@ -5,23 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
-  <body class="bg-gray-700">
+  <body class="bg-gray-50 dark:bg-gray-700">
     <link href="https://fonts.googleapis.com/css2?family=Overpass+Mono:wght@700&display=swap" rel="stylesheet">
 
-    <nav class="bg-gray-900 shadow-lg">
+    <header class="bg-gray-900 shadow-lg">
       <div class="container p-2 flex flex-wrap justify-between mx-auto">
         <div class="flex self-center font-bold text-white">
-          Wasm-timer
+          WASM TIMER
         </div>
 
-        <form class="flex text-sm">
-          <input class="p-1 bg-gray-100" type="text" id="timespan" placeholder="H:M:S" />
-          <button class="bg-gray-300 p-1" id="exec">
-            Exec
+        <div class="flex flex-row-reverse">
+          <form class="flex text-sm">
+            <input class="p-1 bg-gray-100" type="text" id="timespan" placeholder="H:M:S" />
+            <button class="bg-gray-300 p-1" id="exec">
+              Exec
+            </button>
+          </form>
+          <button id="dim" class="px-1">
+            🌙
           </button>
-        </form>
+        </div>
       </div>
-    </nav>
+    </header>
 
     <div class="container mx-auto p-2">
       <div id="target" style="font-family: 'Overpass Mono', monospace;">
