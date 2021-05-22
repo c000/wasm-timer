@@ -36,7 +36,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "index.html",
       inject: 'head',
-      title: "WASM Timer"
+      title: "Wasm timer"
     }),
     new WasmPackPlugin({
       crateDirectory: __dirname,
