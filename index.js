@@ -48,8 +48,9 @@ window.onload = () => {
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
 /******/ 		// Check if module is in cache
-/******/ 		if(__webpack_module_cache__[moduleId]) {
-/******/ 			return __webpack_module_cache__[moduleId].exports;
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
 /******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = __webpack_module_cache__[moduleId] = {
@@ -111,10 +112,10 @@ window.onload = () => {
 /******/ 	
 /******/ 	/* webpack/runtime/get mini-css chunk filename */
 /******/ 	(() => {
-/******/ 		// This function allow to reference all chunks
+/******/ 		// This function allow to reference async chunks
 /******/ 		__webpack_require__.miniCssF = (chunkId) => {
 /******/ 			// return url for filenames based on template
-/******/ 			return "" + (chunkId === 179 ? "main" : chunkId) + ".css";
+/******/ 			return undefined;
 /******/ 		};
 /******/ 	})();
 /******/ 	
@@ -147,7 +148,7 @@ window.onload = () => {
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
-/******/ 		__webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop)
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/load script */
@@ -155,7 +156,7 @@ window.onload = () => {
 /******/ 		var inProgress = {};
 /******/ 		var dataWebpackPrefix = "wasm-timer:";
 /******/ 		// loadScript function to load a script via script tag
-/******/ 		__webpack_require__.l = (url, done, key) => {
+/******/ 		__webpack_require__.l = (url, done, key, chunkId) => {
 /******/ 			if(inProgress[url]) { inProgress[url].push(done); return; }
 /******/ 			var script, needAttach;
 /******/ 			if(key !== undefined) {
@@ -185,7 +186,7 @@ window.onload = () => {
 /******/ 				var doneFns = inProgress[url];
 /******/ 				delete inProgress[url];
 /******/ 				script.parentNode && script.parentNode.removeChild(script);
-/******/ 				doneFns && doneFns.forEach((fn) => fn(event));
+/******/ 				doneFns && doneFns.forEach((fn) => (fn(event)));
 /******/ 				if(prev) return prev(event);
 /******/ 			}
 /******/ 			;
@@ -233,11 +234,10 @@ window.onload = () => {
 /******/ 		
 /******/ 		// object to store loaded and loading chunks
 /******/ 		// undefined = chunk not loaded, null = chunk preloaded/prefetched
-/******/ 		// Promise = chunk loading, 0 = chunk loaded
+/******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = {
 /******/ 			179: 0
 /******/ 		};
-/******/ 		
 /******/ 		
 /******/ 		__webpack_require__.f.j = (chunkId, promises) => {
 /******/ 				// JSONP chunk loading for javascript
@@ -250,9 +250,7 @@ window.onload = () => {
 /******/ 					} else {
 /******/ 						if(true) { // all chunks have JS
 /******/ 							// setup Promise in chunk cache
-/******/ 							var promise = new Promise((resolve, reject) => {
-/******/ 								installedChunkData = installedChunks[chunkId] = [resolve, reject];
-/******/ 							});
+/******/ 							var promise = new Promise((resolve, reject) => (installedChunkData = installedChunks[chunkId] = [resolve, reject]));
 /******/ 							promises.push(installedChunkData[2] = promise);
 /******/ 		
 /******/ 							// start chunk loading
@@ -274,7 +272,7 @@ window.onload = () => {
 /******/ 									}
 /******/ 								}
 /******/ 							};
-/******/ 							__webpack_require__.l(url, loadingEnded, "chunk-" + chunkId);
+/******/ 							__webpack_require__.l(url, loadingEnded, "chunk-" + chunkId, chunkId);
 /******/ 						} else installedChunks[chunkId] = 0;
 /******/ 					}
 /******/ 				}
@@ -288,37 +286,36 @@ window.onload = () => {
 /******/ 		
 /******/ 		// no HMR manifest
 /******/ 		
-/******/ 		// no deferred startup
+/******/ 		// no on chunks loaded
 /******/ 		
 /******/ 		// install a JSONP callback for chunk loading
-/******/ 		var webpackJsonpCallback = (data) => {
+/******/ 		var webpackJsonpCallback = (parentChunkLoadingFunction, data) => {
 /******/ 			var [chunkIds, moreModules, runtime] = data;
 /******/ 			// add "moreModules" to the modules object,
 /******/ 			// then flag all "chunkIds" as loaded and fire callback
-/******/ 			var moduleId, chunkId, i = 0, resolves = [];
+/******/ 			var moduleId, chunkId, i = 0;
+/******/ 			if(chunkIds.some((id) => (installedChunks[id] !== 0))) {
+/******/ 				for(moduleId in moreModules) {
+/******/ 					if(__webpack_require__.o(moreModules, moduleId)) {
+/******/ 						__webpack_require__.m[moduleId] = moreModules[moduleId];
+/******/ 					}
+/******/ 				}
+/******/ 				if(runtime) var result = runtime(__webpack_require__);
+/******/ 			}
+/******/ 			if(parentChunkLoadingFunction) parentChunkLoadingFunction(data);
 /******/ 			for(;i < chunkIds.length; i++) {
 /******/ 				chunkId = chunkIds[i];
 /******/ 				if(__webpack_require__.o(installedChunks, chunkId) && installedChunks[chunkId]) {
-/******/ 					resolves.push(installedChunks[chunkId][0]);
+/******/ 					installedChunks[chunkId][0]();
 /******/ 				}
 /******/ 				installedChunks[chunkId] = 0;
-/******/ 			}
-/******/ 			for(moduleId in moreModules) {
-/******/ 				if(__webpack_require__.o(moreModules, moduleId)) {
-/******/ 					__webpack_require__.m[moduleId] = moreModules[moduleId];
-/******/ 				}
-/******/ 			}
-/******/ 			if(runtime) runtime(__webpack_require__);
-/******/ 			parentChunkLoadingFunction(data);
-/******/ 			while(resolves.length) {
-/******/ 				resolves.shift()();
 /******/ 			}
 /******/ 		
 /******/ 		}
 /******/ 		
 /******/ 		var chunkLoadingGlobal = self["webpackChunkwasm_timer"] = self["webpackChunkwasm_timer"] || [];
-/******/ 		var parentChunkLoadingFunction = chunkLoadingGlobal.push.bind(chunkLoadingGlobal);
-/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback;
+/******/ 		chunkLoadingGlobal.forEach(webpackJsonpCallback.bind(null, 0));
+/******/ 		chunkLoadingGlobal.push = webpackJsonpCallback.bind(null, chunkLoadingGlobal.push.bind(chunkLoadingGlobal));
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/wasm chunk loading */
@@ -352,9 +349,8 @@ window.onload = () => {
 /******/ 		var wasmImportedFuncCache21;
 /******/ 		var wasmImportedFuncCache22;
 /******/ 		var wasmImportedFuncCache23;
-/******/ 		var wasmImportedFuncCache24;
 /******/ 		var wasmImportObjects = {
-/******/ 			716: function() {
+/******/ 			373: function() {
 /******/ 				return {
 /******/ 					"./index_bg.js": {
 /******/ 						"__wbindgen_object_drop_ref": function(p0i32) {
@@ -365,85 +361,85 @@ window.onload = () => {
 /******/ 							if(wasmImportedFuncCache1 === undefined) wasmImportedFuncCache1 = __webpack_require__.c[838].exports;
 /******/ 							return wasmImportedFuncCache1["L8"](p0i32,p1i32);
 /******/ 						},
-/******/ 						"__wbg_instanceof_Window_11e25482011fc506": function(p0i32) {
+/******/ 						"__wbg_instanceof_Window_434ce1849eb4e0fc": function(p0i32) {
 /******/ 							if(wasmImportedFuncCache2 === undefined) wasmImportedFuncCache2 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache2["s8"](p0i32);
+/******/ 							return wasmImportedFuncCache2["xA"](p0i32);
 /******/ 						},
-/******/ 						"__wbg_document_5aff8cd83ef968f5": function(p0i32) {
+/******/ 						"__wbg_document_5edd43643d1060d9": function(p0i32) {
 /******/ 							if(wasmImportedFuncCache3 === undefined) wasmImportedFuncCache3 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache3["WB"](p0i32);
+/******/ 							return wasmImportedFuncCache3["p$"](p0i32);
 /******/ 						},
-/******/ 						"__wbg_createElement_ac65a6ce60c4812c": function(p0i32,p1i32,p2i32) {
+/******/ 						"__wbg_createElement_d017b8d2af99bab9": function(p0i32,p1i32,p2i32) {
 /******/ 							if(wasmImportedFuncCache4 === undefined) wasmImportedFuncCache4 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache4["b6"](p0i32,p1i32,p2i32);
+/******/ 							return wasmImportedFuncCache4["cM"](p0i32,p1i32,p2i32);
 /******/ 						},
-/******/ 						"__wbg_instanceof_HtmlDivElement_819bb57c54982a2f": function(p0i32) {
+/******/ 						"__wbg_instanceof_HtmlDivElement_bac28ffe4da88067": function(p0i32) {
 /******/ 							if(wasmImportedFuncCache5 === undefined) wasmImportedFuncCache5 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache5["tu"](p0i32);
+/******/ 							return wasmImportedFuncCache5["Os"](p0i32);
 /******/ 						},
-/******/ 						"__wbg_classList_bbb57a7d3cc23c85": function(p0i32) {
+/******/ 						"__wbg_classList_5086913f676eb3f3": function(p0i32) {
 /******/ 							if(wasmImportedFuncCache6 === undefined) wasmImportedFuncCache6 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache6["O3"](p0i32);
+/******/ 							return wasmImportedFuncCache6["K8"](p0i32);
 /******/ 						},
-/******/ 						"__wbg_setinnerText_4204a2dcac11f07d": function(p0i32,p1i32,p2i32) {
+/******/ 						"__wbg_setinnerText_c3f35135f8c5259e": function(p0i32,p1i32,p2i32) {
 /******/ 							if(wasmImportedFuncCache7 === undefined) wasmImportedFuncCache7 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache7["tD"](p0i32,p1i32,p2i32);
+/******/ 							return wasmImportedFuncCache7["B3"](p0i32,p1i32,p2i32);
 /******/ 						},
-/******/ 						"__wbg_style_25309daade79abb3": function(p0i32) {
+/******/ 						"__wbg_style_16f5dd9624687c8f": function(p0i32) {
 /******/ 							if(wasmImportedFuncCache8 === undefined) wasmImportedFuncCache8 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache8["eU"](p0i32);
+/******/ 							return wasmImportedFuncCache8["cE"](p0i32);
 /******/ 						},
-/******/ 						"__wbg_add_3b4cecc512643e9f": function(p0i32,p1i32,p2i32) {
+/******/ 						"__wbg_add_c1e566b20be6badb": function(p0i32,p1i32,p2i32) {
 /******/ 							if(wasmImportedFuncCache9 === undefined) wasmImportedFuncCache9 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache9["Wo"](p0i32,p1i32,p2i32);
+/******/ 							return wasmImportedFuncCache9["_B"](p0i32,p1i32,p2i32);
 /******/ 						},
-/******/ 						"__wbg_remove_c15603553c81dc31": function(p0i32,p1i32,p2i32) {
+/******/ 						"__wbg_remove_b4d29ca5eb7db54e": function(p0i32,p1i32,p2i32) {
 /******/ 							if(wasmImportedFuncCache10 === undefined) wasmImportedFuncCache10 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache10["w8"](p0i32,p1i32,p2i32);
+/******/ 							return wasmImportedFuncCache10["DJ"](p0i32,p1i32,p2i32);
 /******/ 						},
-/******/ 						"__wbg_appendChild_6ed236bb79c198df": function(p0i32,p1i32) {
+/******/ 						"__wbg_appendChild_3fe5090c665d3bb4": function(p0i32,p1i32) {
 /******/ 							if(wasmImportedFuncCache11 === undefined) wasmImportedFuncCache11 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache11["hP"](p0i32,p1i32);
+/******/ 							return wasmImportedFuncCache11["Az"](p0i32,p1i32);
 /******/ 						},
-/******/ 						"__wbg_setProperty_dccccce3a52c26db": function(p0i32,p1i32,p2i32,p3i32,p4i32) {
+/******/ 						"__wbg_setProperty_ebb06e7fa941d6a8": function(p0i32,p1i32,p2i32,p3i32,p4i32) {
 /******/ 							if(wasmImportedFuncCache12 === undefined) wasmImportedFuncCache12 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache12["mK"](p0i32,p1i32,p2i32,p3i32,p4i32);
+/******/ 							return wasmImportedFuncCache12["IY"](p0i32,p1i32,p2i32,p3i32,p4i32);
 /******/ 						},
-/******/ 						"__wbg_call_ba36642bd901572b": function(p0i32,p1i32) {
+/******/ 						"__wbg_newnoargs_f579424187aa1717": function(p0i32,p1i32) {
 /******/ 							if(wasmImportedFuncCache13 === undefined) wasmImportedFuncCache13 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache13["qw"](p0i32,p1i32);
+/******/ 							return wasmImportedFuncCache13["bf"](p0i32,p1i32);
+/******/ 						},
+/******/ 						"__wbg_call_89558c3e96703ca1": function(p0i32,p1i32) {
+/******/ 							if(wasmImportedFuncCache14 === undefined) wasmImportedFuncCache14 = __webpack_require__.c[838].exports;
+/******/ 							return wasmImportedFuncCache14["Z4"](p0i32,p1i32);
 /******/ 						},
 /******/ 						"__wbindgen_object_clone_ref": function(p0i32) {
-/******/ 							if(wasmImportedFuncCache14 === undefined) wasmImportedFuncCache14 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache14["m_"](p0i32);
-/******/ 						},
-/******/ 						"__wbg_newnoargs_9fdd8f3961dd1bee": function(p0i32,p1i32) {
 /******/ 							if(wasmImportedFuncCache15 === undefined) wasmImportedFuncCache15 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache15["UL"](p0i32,p1i32);
+/******/ 							return wasmImportedFuncCache15["m_"](p0i32);
 /******/ 						},
-/******/ 						"__wbg_getTime_55dfad3366aec58a": function(p0i32) {
+/******/ 						"__wbg_getTime_f8ce0ff902444efb": function(p0i32) {
 /******/ 							if(wasmImportedFuncCache16 === undefined) wasmImportedFuncCache16 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache16["eY"](p0i32);
+/******/ 							return wasmImportedFuncCache16["OL"](p0i32);
 /******/ 						},
-/******/ 						"__wbg_new0_85024d5e91a046e9": function() {
+/******/ 						"__wbg_new0_57a6a2c2aaed3fc5": function() {
 /******/ 							if(wasmImportedFuncCache17 === undefined) wasmImportedFuncCache17 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache17["NI"]();
+/******/ 							return wasmImportedFuncCache17["Of"]();
 /******/ 						},
-/******/ 						"__wbg_self_bb69a836a72ec6e9": function() {
+/******/ 						"__wbg_self_e23d74ae45fb17d1": function() {
 /******/ 							if(wasmImportedFuncCache18 === undefined) wasmImportedFuncCache18 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache18["tS"]();
+/******/ 							return wasmImportedFuncCache18["tL"]();
 /******/ 						},
-/******/ 						"__wbg_window_3304fc4b414c9693": function() {
+/******/ 						"__wbg_window_b4be7f48b24ac56e": function() {
 /******/ 							if(wasmImportedFuncCache19 === undefined) wasmImportedFuncCache19 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache19["R$"]();
+/******/ 							return wasmImportedFuncCache19["Qu"]();
 /******/ 						},
-/******/ 						"__wbg_globalThis_e0d21cabc6630763": function() {
+/******/ 						"__wbg_globalThis_d61b1f48a57191ae": function() {
 /******/ 							if(wasmImportedFuncCache20 === undefined) wasmImportedFuncCache20 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache20["md"]();
+/******/ 							return wasmImportedFuncCache20["EB"]();
 /******/ 						},
-/******/ 						"__wbg_global_8463719227271676": function() {
+/******/ 						"__wbg_global_e7669da72fd7f239": function() {
 /******/ 							if(wasmImportedFuncCache21 === undefined) wasmImportedFuncCache21 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache21["IF"]();
+/******/ 							return wasmImportedFuncCache21["Yc"]();
 /******/ 						},
 /******/ 						"__wbindgen_is_undefined": function(p0i32) {
 /******/ 							if(wasmImportedFuncCache22 === undefined) wasmImportedFuncCache22 = __webpack_require__.c[838].exports;
@@ -452,10 +448,6 @@ window.onload = () => {
 /******/ 						"__wbindgen_throw": function(p0i32,p1i32) {
 /******/ 							if(wasmImportedFuncCache23 === undefined) wasmImportedFuncCache23 = __webpack_require__.c[838].exports;
 /******/ 							return wasmImportedFuncCache23["Or"](p0i32,p1i32);
-/******/ 						},
-/******/ 						"__wbindgen_rethrow": function(p0i32) {
-/******/ 							if(wasmImportedFuncCache24 === undefined) wasmImportedFuncCache24 = __webpack_require__.c[838].exports;
-/******/ 							return wasmImportedFuncCache24["nD"](p0i32);
 /******/ 						}
 /******/ 					}
 /******/ 				};
@@ -464,7 +456,7 @@ window.onload = () => {
 /******/ 		
 /******/ 		var wasmModuleMap = {
 /******/ 			"235": [
-/******/ 				716
+/******/ 				373
 /******/ 			]
 /******/ 		};
 /******/ 		
@@ -484,9 +476,9 @@ window.onload = () => {
 /******/ 					promises.push(installedWasmModuleData);
 /******/ 				else {
 /******/ 					var importObject = wasmImportObjects[wasmModuleId]();
-/******/ 					var req = fetch(__webpack_require__.p + "" + {"235":{"716":"27b4d3681f7c9d367dcc"}}[chunkId][wasmModuleId] + ".module.wasm");
+/******/ 					var req = fetch(__webpack_require__.p + "" + {"235":{"373":"604eca831f31aea2373e"}}[chunkId][wasmModuleId] + ".module.wasm");
 /******/ 					var promise;
-/******/ 					if(importObject instanceof Promise && typeof WebAssembly.compileStreaming === 'function') {
+/******/ 					if(importObject && typeof importObject.then === 'function' && typeof WebAssembly.compileStreaming === 'function') {
 /******/ 						promise = Promise.all([WebAssembly.compileStreaming(req), importObject]).then(function(items) {
 /******/ 							return WebAssembly.instantiate(items[0], items[1]);
 /******/ 						});
@@ -507,9 +499,11 @@ window.onload = () => {
 /******/ 	})();
 /******/ 	
 /************************************************************************/
+/******/ 	
 /******/ 	// module cache are used so entry inlining is disabled
 /******/ 	// startup
-/******/ 	// Load entry module
-/******/ 	__webpack_require__(10);
+/******/ 	// Load entry module and return exports
+/******/ 	var __webpack_exports__ = __webpack_require__(10);
+/******/ 	
 /******/ })()
 ;
