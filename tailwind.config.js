@@ -1,7 +1,7 @@
 const colors = require('tailwindcss/colors')
 
 module.exports = {
-  purge: [
+  content: [
     'index.html',
     'index.js',
     './src/**/*.rs',
@@ -10,7 +10,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        gray: colors.warmGray,
+        gray: colors.stone,
         orange: colors.orange,
       },
     },
